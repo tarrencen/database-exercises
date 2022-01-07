@@ -15,7 +15,8 @@ SELECT MAX(release_date) FROM albums;
 SELECT name FROM albums WHERE artist = 'Pink Floyd';
 # The Dark Side of the Moon, The Wall ->
 
-SELECT release_date FROM albums WHERE name = 'Sgt. Pepper\'s Lonely Hearts Club';
+SELECT * FROM albums WHERE name = 'Sgt. Pepper\'s Lonely Hearts Club Band';
+# 1967
 
 SELECT genre FROM albums WHERE name = 'Nevermind';
 # Grunge, Alternative Rock is genre for album Nevermind
