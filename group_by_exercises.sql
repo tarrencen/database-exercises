@@ -46,13 +46,15 @@ FROM employees
 -- Using your query that generates a username for all of the employees, generate a count employees for each unique username. Are there any duplicate usernames? BONUS: How many duplicate usernames are there?
 
 SELECT CONCAT 
-(LOWER (SUBSTR(first_name, 1, 1)), LOWER (SUBSTR(last_name, 1, 4)), "_", SUBSTR(birth_date, 6, 2), SUBSTR(birth_date, 3, 2)) AS username, first_name, last_name, birth_date, 
+(LOWER (SUBSTR(first_name, 1, 1)), LOWER (SUBSTR(last_name, 1, 4)), "_", SUBSTR(birth_date, 6, 2), SUBSTR(birth_date, 3, 2)) AS username, 
 COUNT(*) AS n_same_username
 FROM employees
-GROUP BY first_name, last_name, birth_date, username
-HAVING n_same_username >= 2;
-# Query indicates 5 duped usernames. Output doesn't show them individually, though. How do we make that happen?
+GROUP BY username
+HAVING n_same_username > 1
+ORDER BY n_same_username DESC;
 
+# Query indicates 5 duped usernames. Output doesn't show them individually, though. How do we make that happen?
+# ^ WRONG! Way more than 5 dupes!
 
 
 -- More practice with aggregate functions:
@@ -74,15 +76,18 @@ SELECT * FROM dept_emp;
 
 SELECT DISTINCT dept_no, COUNT(dept_no) AS dept_numbers
 FROM dept_emp
-	GROUP BY dept_no;
+ 	WHERE to_date LIKE '9999%'
+		GROUP BY dept_no;
+		
+# Glossed over that "current employee" part (to_date LIKE 9999%)		
 
 -- Determine how many different salaries each employee has had. This includes both historic and current.
 DESCRIBE salaries;
 
-SELECT DISTINCT salary, emp_no, COUNT (salary)
+SELECT emp_no, COUNT(*)
 FROM salaries
 	GROUP BY emp_no;
-# Error reads, "executed command denied to user 'innis_1673@%' for routine 'employees.COUNT'"
+# Error reads, "executed command denied to user 'innis_1673@%' for routine 'employees.COUNT'"; but the query was wrong anyway
 
 -- Find the maximum salary for each employee.
 SELECT emp_no, MAX(salary)
