@@ -175,7 +175,7 @@ ORDER BY Boss_pay DESC LIMIT 1;
  
 -- Determine the average salary for each department. Use all salary information and round your results. 
 
-SELECT departments.dept_name AS dpto, AVG(salaries.salary) AS plata_prom
+SELECT departments.dept_name AS dpto, ROUND(AVG(salaries.salary),0) AS plata_prom
 FROM departments
 JOIN dept_emp
 	ON dept_emp.dept_no = departments.dept_no
@@ -188,7 +188,15 @@ ORDER BY plata_prom DESC;
 
 -- Bonus Find the names of all current employees, their department name, and their current manager's name.
 
-SELECT CONCAT(employees.first_name, " ", employees.last_name) AS empleado, departments.dept_name AS dpto 
+SELECT employees.last_name
 FROM employees
+JOIN dept_manager
+	ON dept_manager.emp_no = employees.emp_no
+WHERE dept_manager.to_date LIKE '9999%' AS Boss_name
+(SELECT CONCAT(employees.first_name, " ", employees.last_name) AS empleado, departments.dept_name AS dpto, Boss_name
+FROM employees
+JOIN dept_manager
+	ON dept_manager.emp_no = employees.emp_no
+WHERE dept_manager.emp_no
 
 -- Bonus Who is the highest paid employee within each department.
