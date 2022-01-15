@@ -3,9 +3,10 @@
 SELECT Database();
 SHOW TABLES;
 
-CREATE TEMPORARY TABLE employees_with_departments AS (SELECT employees.first_name, employees.last_name, departments.dept_name 
-														FROM employees.employees, employees.departments 
-												LIMIT 10); 
+CREATE TEMPORARY TABLE employees_with_departments AS (
+				SELECT employees.first_name, employees.last_name, departments.dept_name 
+				FROM employees.employees, employees.departments 
+			  LIMIT 10); 
 
 
 
@@ -40,10 +41,10 @@ DROP TABLE employees_with_departments;
 /* Create the temp table with the following code:*/
 
 CREATE TEMPORARY TABLE employees_with_departments AS (
-													SELECT CONCAT(employees.first_name, " ", employees.last_name) AS full_name, departments.dept_name AS Dept
-													FROM employees.employees, employees.departments 
-											JOIN employees.dept_emp 
-											WHERE dept_emp.to_date LIMIT 10);
+				SELECT CONCAT(employees.first_name, " ", employees.last_name) AS full_name, departments.dept_name AS Dept
+				FROM employees.employees, employees.departments 
+			  JOIN employees.dept_emp 
+				WHERE dept_emp.to_date LIMIT 10);
 											
 SELECT * FROM employees_with_departments;
 
