@@ -1,13 +1,15 @@
 -- Find all the current employees with the same hire date as employee 101010 using a sub-query.
 
-SELECT CONCAT(first_name, " ", last_name), hire_date
-FROM employees
+SELECT CONCAT(e.first_name, " ", e.last_name), e.hire_date
+FROM employees e
+JOIN dept_emp de USING(emp_no)
 WHERE hire_date = (
 		SELECT hire_date 
 		FROM employees 
 		WHERE emp_no = 101010
-		);
-# 69 results returned.
+		) AND de.to_date > CURDATE();
+		
+# 55 results returned.
 
 -- Find all the titles ever held by all current employees with the first name Aamod.
 
@@ -31,29 +33,42 @@ JOIN dept_emp de USING(emp_no)
 WHERE de.to_date < CURDATE() AND e.first_name LIKE 'Aamod'
 GROUP BY t.title;
 
-#No subquery...
+# No subquery...
 
 -- How many people in the employees table are no longer working for the company? Give the answer in a comment in your code.
 
 SELECT COUNT(*)
-FROM employees
-WHERE (
-	SELECT *
-	FROM dept_emp)
+FROM employees e
+JOIN dept_emp de USING(emp_no)
+WHERE de.to_date < CURDATE();
+
+# 91479 counted from this query, but since a subquery is expected, probably not right...
 
 -- Find all the current department managers that are female. List their names in a comment in your code.
+
+SELECT CONCAT(first_name, " ", last_name) 
+FROM employees
+WHERE gender = 'F'; 
+
+(SELECT * FROM dept_manager
+WHERE to_date > CURDATE());
+
+SELECT CONCAT(e.first_name, " ", e.last_name)
+FROM employees e
+JOIN dept_manager dm USING(emp_no)
+WHERE e.gender = 'F' AND dm.to_date > CURDATE();
+
+# Isamu Legleitner, Karsten Sigstam, Leon DasSarma,  Hilary Kambii from this query with no subquery...
+
 
 -- Find all the employees who currently have a higher salary than the companies overall, historical average salary.
 
 -- How many current salaries are within 1 standard deviation of the current highest salary? (Hint: you can use a built in function to calculate the standard deviation.) What percentage of all salaries is this?
 
-WITH highest_salary AS
-	(SELECT MAX(salary) FROM salaries),
-	sal_std_dev AS
-	(SELECT STDDEV(salary) FROM salaries)
-SELECT salary, emp_no
-FROM salaries
-WHERE salary <= (highest_salary - sal_std_dev);
+SELECT COUNT(de.emp_no), ROUND(MAX(s.salary) - STDDEV(s.salary), 2) AS top_sal_std
+FROM salaries s
+JOIN dept_emp de USING (emp_no)
+WHERE s.salary >= top_sal_std AND de.to_date > CURDATE();
 	
 
 -- Hint Number 1 You will likely use a combination of different kinds of subqueries.
